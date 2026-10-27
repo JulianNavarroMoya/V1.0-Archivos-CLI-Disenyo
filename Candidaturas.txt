@@ -10,6 +10,7 @@
 10;Backend Node.js;Idealista;ENTREVISTA;27/10/2026
 11;Frontend React;Glovo;RECHAZADO;28/10/2026
 12;Arquitecto Cloud;AWS Iberia;PENDIENTE;29/10/2026
+13;JavaFX Desktop Developer;Babel;OFERTA;26/10/2026
 14;Desarrollador Kotlin;Santander Tecnología;ENTREVISTA;30/10/2026
 15;Administrador de Sistemas;Indra;PENDIENTE;31/10/2026
 16;Dev Java;Indra;PENDIENTE;26/10/2026
@@ -28,3 +29,5 @@
 29;JavaFX Desktop Developer;Babel;OFERTA;26/10/2026
 30;Desarrollador Kotlin;Santander Tecnología;ENTREVISTA;30/10/2026
 31;Administrador de Sistemas;Indra;PENDIENTE;31/10/2026
+32;Dev Java;Indra;PENDIENTE;26/10/2026
+
