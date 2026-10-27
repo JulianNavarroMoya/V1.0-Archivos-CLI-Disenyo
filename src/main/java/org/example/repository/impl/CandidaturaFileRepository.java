@@ -29,7 +29,7 @@ import java.util.Optional;
  * {@link StandardCharsets#UTF_8}. Si el fichero no existe, se crea
  * automáticamente.</p>
  *
- * @author Julian Navarro Moya
+ * @author Julian Navarro Moya || Chakir Hachmi
  * @version 1.0
  */
 public class CandidaturaFileRepository implements CandidaturaRepository {

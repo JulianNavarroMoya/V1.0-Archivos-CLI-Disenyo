@@ -9,7 +9,7 @@ package org.example.exception;
  * recursos inexistentes. El mensaje transportado está pensado para mostrarse
  * directamente por consola, en español y sin trazas técnicas.</p>
  *
- * @author Julian Navarro Moya
+ * @author Julian Navarro Moya || Chakir Hachmi
  * @version 1.0
  */
 public class TrackerException extends RuntimeException {

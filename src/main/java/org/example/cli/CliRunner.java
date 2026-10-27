@@ -23,7 +23,7 @@ import java.util.Set;
  * <p>La clase no abre ningún menú interactivo: cada ejecución procesa una
  * única orden y finaliza.</p>
  *
- * @author Julian Navarro Moya
+ * @author Julian Navarro Moya || Chakir Hachmi
  * @version 1.0
  */
 public class CliRunner {

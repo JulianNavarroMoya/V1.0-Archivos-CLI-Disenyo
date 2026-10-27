@@ -19,7 +19,7 @@ import java.util.Objects;
  * permite cambiar la persistencia en futuras versiones sin alterar esta
  * clase.</p>
  *
- * @author Julian Navarro Moya
+ * @author Julian Navarro Moya || Chakir Hachmi
  * @version 1.0
  */
 public class CandidaturaService {

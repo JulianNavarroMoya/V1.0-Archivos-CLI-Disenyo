@@ -14,7 +14,7 @@ import java.time.format.DateTimeParseException;
  *
  * <p>Ejemplo: {@code 13;Desarrollador Backend Java;Indra;PENDIENTE;26/10/2026}</p>
  *
- * @author Julian Navarro Moya
+ * @author Julian Navarro Moya || Chakir Hachmi
  * @version 1.0
  */
 public class Candidatura {

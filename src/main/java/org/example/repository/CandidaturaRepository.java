@@ -13,7 +13,7 @@ import java.util.Optional;
  * que en la v2.0 (JDBC) y la v3.0 (Hibernate) bastará con proporcionar nuevas
  * implementaciónes sin modificar la lógica de aplicación.</p>
  *
- * @author Julian Navarro Moya
+ * @author Julian Navarro Moya || Chakir Hachmi
  * @version 1.0
  */
 public interface CandidaturaRepository {

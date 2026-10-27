@@ -51,8 +51,7 @@ V1.0-Archivos-CLI-Disenyo/
             └── org/example/
                 ├── Main.java                # Punto de entrada: instancia capas y delega args a CliRunner
                 ├── model/
-                │   ├── Candidatura.java     # Entidad POJO (id, titulo, empresa, estado, fecha)
-                │   └── EstadoCandidatura.java # Enum o constantes de estado (PENDIENTE, ENTREVISTA, OFERTA, RECHAZADO)
+                │   └── Candidatura.java     # Entidad POJO (id, titulo, empresa, estado, fecha)
                 ├── repository/
                 │   ├── CandidaturaRepository.java       # Interfaz CRUD desacoplada
                 │   └── CandidaturaFileRepository.java   # Implementación NIO sobre 'candidaturas.txt'

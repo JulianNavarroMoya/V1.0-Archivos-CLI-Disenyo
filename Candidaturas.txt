@@ -13,3 +13,18 @@
 14;Desarrollador Kotlin;Santander Tecnología;ENTREVISTA;30/10/2026
 15;Administrador de Sistemas;Indra;PENDIENTE;31/10/2026
 16;Dev Java;Indra;PENDIENTE;26/10/2026
+17;Desarrollador Backend Java;Indra;PENDIENTE;15/10/2026
+18;Fullstack Developer Junior;NTT Data;ENTREVISTA;18/10/2026
+19;Ingeniero de Datos;Accenture;RECHAZADO;20/10/2026
+20;Analista Funcional;Indra;PENDIENTE;21/10/2026
+21;Desarrollador Java Senior;Indra;PENDIENTE;22/10/2026
+22;Técnico de Soporte;Telefónica;ENTREVISTA;23/10/2026
+23;QA Automation Engineer;Capgemini;PENDIENTE;24/10/2026
+24;Desarrollador Angular;Minsait;OFERTA;25/10/2026
+25;Data Engineer;Repsol;PENDIENTE;26/10/2026
+26;Backend Node.js;Idealista;ENTREVISTA;27/10/2026
+27;Frontend React;Glovo;RECHAZADO;28/10/2026
+28;Arquitecto Cloud;AWS Iberia;PENDIENTE;29/10/2026
+29;JavaFX Desktop Developer;Babel;OFERTA;26/10/2026
+30;Desarrollador Kotlin;Santander Tecnología;ENTREVISTA;30/10/2026
+31;Administrador de Sistemas;Indra;PENDIENTE;31/10/2026
