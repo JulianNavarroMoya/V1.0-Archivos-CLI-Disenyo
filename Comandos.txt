@@ -1,0 +1,43 @@
+1. listar — todas
+
+java -jar tracker.jar listar
+
+2. listar — filtros (opcionales y combinables)
+
+java -jar tracker.jar listar --estado pendiente
+java -jar tracker.jar listar --empresa Indra
+java -jar tracker.jar listar --estado pendiente --empresa Indra
+java -jar tracker.jar listar --empresa Indra --estado pendiente
+java -jar tracker.jar listar --estado entrevista
+java -jar tracker.jar listar --estado rechazado
+java -jar tracker.jar listar --estado=pendiente --empresa=Indra
+java -jar tracker.jar listar -estado pendiente -empresa Indra --estado = coincidencia exacta (sin distinguir mayúsculas). --empresa = coincidencia parcial.
+
+3. anadir — nueva candidatura
+
+java -jar tracker.jar anadir --titulo "Desarrollador Backend Java" --empresa "Indra" --estado pendiente --fecha 26/10/2026
+java -jar tracker.jar anadir --titulo "AI Engineer" --empresa "OpenAI" --estado entrevista --fecha 29/10/2026
+java -jar tracker.jar anadir --titulo "Analista Funcional" --empresa "Accenture" --estado pendiente
+java -jar tracker.jar añadir --titulo "Dev Java" --empresa "Indra" --estado pendiente --fecha 31/10/2026
+java -jar tracker.jar anadir --titulo="Dev Java" --empresa="Indra" --estado="pendiente" --fecha="26/10/2026"
+Obligatorios: --titulo, --empresa, --estado. --fecha opcional (si falta → fecha de hoy). Formato estricto dd/MM/yyyy.
+
+4. ver — detalle por ID
+
+java -jar tracker.jar ver 13
+
+5. borrar — eliminar por ID
+
+java -jar tracker.jar borrar 13
+
+6. importar — CSV externo
+
+java -jar tracker.jar importar candidaturas.csv
+java -jar tracker.jar importar .\candidaturas.csv
+java -jar tracker.jar importar "C:\Users\julin\IdeaProjects\test\V1.0-Archivos-CLI-Disenyo\candidaturas.csv"
+java -jar tracker.jar importar "C:\ruta con espacios\candidaturas.csv"
+
+7. Ayuda
+
+java -jar tracker.jar ayuda
+java -jar tracker.jar --help

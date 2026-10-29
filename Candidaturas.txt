@@ -30,4 +30,5 @@
 30;Desarrollador Kotlin;Santander Tecnología;ENTREVISTA;30/10/2026
 31;Administrador de Sistemas;Indra;PENDIENTE;31/10/2026
 32;Dev Java;Indra;PENDIENTE;26/10/2026
-
+33;Dev Java;Indra;PENDIENTE;26/10/2026
+34;Desarrollador Backend Java;Indra;PENDIENTE;26/10/2026

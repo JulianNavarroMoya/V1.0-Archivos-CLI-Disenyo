@@ -389,7 +389,7 @@ public class CliRunner {
         System.out.println("   java -jar tracker.jar ver 13 || (Ver detalle de la candidatura 13)");
         System.out.println("   java -jar tracker.jar borrar 13 || (Borrar la candidatura 13)");
         System.out.println("   java -jar tracker.jar importar candidaturas.csv || (creará candidaturas.txt automáticamente)");
-        System.out.println("   java -jar target/tracker.jar ver 9999 || (Prueba de control de errores)");
+        System.out.println("   java -jar tracker.jar ver 9999 || (Prueba de control de errores)");
         System.out.println();
         System.out.println(" NOTAS");
         System.out.println("   - Los comandos funcionan con o sin guion inicial: listar / -listar.");

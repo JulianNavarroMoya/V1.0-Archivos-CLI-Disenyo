@@ -39,10 +39,47 @@ Desde la raíz del proyecto:
 mvn clean package
 ```
 
-El JAR ejecutable se genera en:
+El JAR ejecutable se genera en `target/tracker.jar` y, además, se copia
+automáticamente a la raíz del proyecto como `tracker.jar`:
 
 ```text
 target/tracker.jar
+tracker.jar
+```
+
+## Ejecutar
+
+Desde la raíz del proyecto puedes ejecutar el JAR de cualquiera de estas dos
+formas (ambas son válidas):
+
+```powershell
+# Windows
+java -jar tracker.jar listar
+java -jar target\tracker.jar listar
+```
+
+```bash
+# Linux / macOS
+java -jar tracker.jar listar
+java -jar target/tracker.jar listar
+```
+
+Al empaquetar con `mvn clean package`, Maven deja el JAR tanto en `target/`
+como en la raíz del proyecto, de modo que `java -jar tracker.jar ...` ya no
+falla con `Error: Unable to access jarfile tracker.jar`.
+
+Si el JAR todavía no existe, los lanzadores lo generan automáticamente (con
+Maven si está instalado o, en su defecto, con `javac`) y ejecutan siempre desde
+la raíz del proyecto para que `candidaturas.txt` esté siempre en el mismo sitio:
+
+```powershell
+# Windows
+.\tracker.cmd listar --estado pendiente --empresa Indra
+```
+
+```bash
+# Linux / macOS
+./tracker.sh listar --estado pendiente --empresa Indra
 ```
 
 ## Formato de datos

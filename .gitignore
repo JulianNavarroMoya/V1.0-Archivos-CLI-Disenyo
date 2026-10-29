@@ -1,4 +1,6 @@
 target/
+# Copia del JAR generada por `mvn package` en la raiz del proyecto
+/tracker.jar
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
