@@ -1,14 +1,19 @@
 package org.example.ui;
 
+import org.example.config.ConfiguracionBD;
+import org.example.repository.jdbc.EmpresaJdbcDAO;
+import org.example.repository.jdbc.OfertaJdbcDAO;
 import org.example.service.OfertaService;
+import org.example.service.impl.OfertaServiceImpl;
 
 /**
- * Punto único donde la interfaz obtiene los servicios. Aquí se cambia el servicio de
- * prueba por la implementación real cuando esté integrada.
+ * Punto único donde la interfaz obtiene los servicios.
  */
 public final class Servicios {
 
-    private static final OfertaService OFERTAS = new OfertaServicioFalso();
+    private static final ConfiguracionBD CONFIG = new ConfiguracionBD();
+    private static final OfertaService OFERTAS = new OfertaServiceImpl(
+            new OfertaJdbcDAO(CONFIG), new EmpresaJdbcDAO(CONFIG));
 
     private Servicios() {
     }
