@@ -6,9 +6,11 @@
 
     <groupId>org.example</groupId>
     <artifactId>tracker-candidaturas</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
+    <name>JobTrackr</name>
+    <description>Tracker de candidaturas laborales con interfaz JavaFX y MySQL (v2.0)</description>
     <name>Tracker de Candidaturas Laborales</name>
     <description>CLI de gestion de candidaturas laborales con persistencia en ficheros de texto (v1.0)</description>
 
@@ -17,18 +19,48 @@
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <javafx.version>24.0.1</javafx.version>
+        <junit.version>5.12.1</junit.version>
+        <h2.version>2.2.224</h2.version>
     </properties>
 
     <dependencies>
+        <!-- Driver JDBC de MySQL -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>26.10.0</version>
         </dependency>
+
+        <!-- Interfaz gráfica JavaFX -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- Pruebas -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
-        <!-- El artefacto final se generara como target/tracker.jar -->
+        <!-- El artefacto final se generará como target/tracker.jar -->
         <finalName>tracker</finalName>
 
         <plugins>
@@ -56,9 +88,19 @@
                 </configuration>
             </plugin>
 
+            <!-- Ejecuta la interfaz gráfica con `mvn javafx:run` -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>org.example.ui.Launcher</mainClass>
+                </configuration>
+            </plugin>
+
             <!--
-                Copia el JAR ejecutable tambien a la raiz del proyecto.
-                Asi funciona tanto `java -jar tracker.jar ...` como
+                Copia el JAR ejecutable también a la raíz del proyecto.
+                Así funciona tanto `java -jar tracker.jar ...` como
                 `java -jar target/tracker.jar ...` sin cambiar de directorio.
             -->
             <plugin>
