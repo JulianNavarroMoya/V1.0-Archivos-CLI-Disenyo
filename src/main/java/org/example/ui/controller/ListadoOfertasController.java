@@ -19,8 +19,10 @@ import org.example.model.FiltroOferta;
 import org.example.model.Oferta;
 import org.example.service.OfertaService;
 import org.example.ui.Servicios;
+import org.example.ui.dialogo.OfertaDialogo;
 
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -28,6 +30,8 @@ import java.util.ResourceBundle;
  * Controlador del listado de ofertas: muestra, filtra, ordena y borra ofertas.
  */
 public class ListadoOfertasController implements Initializable {
+
+    private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @FXML private TextField txtBuscar;
     @FXML private ComboBox<EstadoOferta> cmbEstado;
@@ -40,6 +44,7 @@ public class ListadoOfertasController implements Initializable {
     @FXML private TableColumn<Oferta, String> colSalario;
 
     private final OfertaService servicio = Servicios.ofertas();
+    private final OfertaDialogo dialogo = new OfertaDialogo(servicio, Servicios.empresas());
     private final ObservableList<Oferta> ofertas = FXCollections.observableArrayList();
     private final FilteredList<Oferta> filtradas = new FilteredList<>(ofertas, o -> true);
 
@@ -50,7 +55,8 @@ public class ListadoOfertasController implements Initializable {
         colEmpresa.setCellValueFactory(c ->
                 new SimpleStringProperty(Objects.toString(c.getValue().nombreEmpresa(), "")));
         colEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().estado().valorBd()));
-        colFecha.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().fechaPostulacion().toString()));
+        colFecha.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().fechaPostulacion() == null
+                ? "" : c.getValue().fechaPostulacion().format(FECHA)));
         colSalario.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().salario() == null ? "" : c.getValue().salario().toPlainString()));
 
@@ -107,25 +113,62 @@ public class ListadoOfertasController implements Initializable {
 
     @FXML
     private void nuevaOferta() {
-        mostrarAviso("El formulario de alta llega en el siguiente commit.");
+        dialogo.alta(ventana()).ifPresent(oferta -> {
+            recargar();
+            seleccionar(oferta);
+        });
     }
 
     @FXML
     private void verOferta() {
-        mostrarAviso("El detalle de la oferta llega en un commit posterior.");
+        Oferta seleccionada = tabla.getSelectionModel().getSelectedItem();
+        if (seleccionada == null) {
+            mostrarAviso("Selecciona una oferta para ver su detalle.");
+            return;
+        }
+        dialogo.mostrarDetalle(ventana(), seleccionada);
     }
 
     @FXML
     private void editarOferta() {
-        mostrarAviso("La edición llega en el siguiente commit.");
+        Oferta seleccionada = tabla.getSelectionModel().getSelectedItem();
+        if (seleccionada == null) {
+            mostrarAviso("Selecciona una oferta para editarla.");
+            return;
+        }
+        dialogo.edicion(ventana(), seleccionada).ifPresent(oferta -> {
+            recargar();
+            seleccionar(oferta);
+        });
     }
 
     /**
      * Vuelve a pedir al servicio las ofertas que cumplen el estado seleccionado.
      */
     private void recargar() {
-        ofertas.setAll(servicio.listarOfertas(
-                new FiltroOferta(null, cmbEstado.getValue(), null, null, null)));
+        try {
+            ofertas.setAll(servicio.listarOfertas(
+                    new FiltroOferta(null, cmbEstado.getValue(), null, null, null)));
+        } catch (TrackerException e) {
+            mostrarError("No se pudieron cargar las ofertas: " + e.getMessage());
+        }
+    }
+
+    private void seleccionar(Oferta oferta) {
+        if (oferta == null) {
+            return;
+        }
+        tabla.getItems().stream()
+                .filter(o -> Objects.equals(o.id(), oferta.id()))
+                .findFirst()
+                .ifPresent(o -> {
+                    tabla.getSelectionModel().select(o);
+                    tabla.scrollTo(o);
+                });
+    }
+
+    private javafx.stage.Window ventana() {
+        return tabla.getScene() == null ? null : tabla.getScene().getWindow();
     }
 
     private void mostrarAviso(String mensaje) {

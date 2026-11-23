@@ -61,6 +61,19 @@
         <!-- El artefacto final se generará como target/tracker.jar -->
         <finalName>tracker</finalName>
 
+        <!-- Incluye los .fxml que viven junto al código Java -->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.fxml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
