@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Operaciones de negocio sobre entrevistas.
  */
-public interface EntrevistaService {
+public interface    EntrevistaService {
 
     /**
      * @param idOferta identificador de la oferta
