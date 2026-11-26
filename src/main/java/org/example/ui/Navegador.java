@@ -26,6 +26,8 @@ public final class Navegador {
      */
     public static void inicializar(Stage stage) {
         escenario = Objects.requireNonNull(stage, "La ventana principal no puede ser nula");
+        escenario.setMinWidth(780);
+        escenario.setMinHeight(480);
     }
 
     /**
