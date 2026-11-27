@@ -132,22 +132,6 @@ mvn test
 
 _Estado: pruebas de DAO, filtros y transacciones en desarrollo._
 
-## Estado de la versión
-
-- [x] Modelo de dominio y esquema SQL
-- [x] DAO JDBC de empresas, ofertas y entrevistas
-- [x] Servicios con validaciones
-- [x] Importación CSV con validación previa
-- [x] Pantalla de listado de ofertas
-- [ ] Transacciones en operaciones de varias tablas
-- [ ] Pantalla de detalle con entrevistas
-- [ ] Formulario de alta y edición de ofertas
-- [ ] Gestión de empresas
-- [ ] Cambio de estado desde la tabla
-- [ ] Hoja de estilos CSS
-- [ ] Tests JUnit con H2
-- [ ] Retirada de la CLI de la versión 1.0
-
 ## Uso de inteligencia artificial
 
 Se ha utilizado un asistente de IA para explicar conceptos, revisar código y preparar
