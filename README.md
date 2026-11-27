@@ -1,37 +1,81 @@
-# Tracker de Candidaturas Laborales — v1.0
+# JobTrackr — Tracker de Candidaturas Laborales (v2.0)
 
-Aplicación **CLI por argumentos** para gestionar candidaturas laborales, desarrollada
-en **Java 21** con **Maven**. La persistencia se realiza exclusivamente en ficheros de
-texto plano con campos separados por punto y coma.
+Aplicación de escritorio con interfaz gráfica **JavaFX** para gestionar candidaturas
+laborales: ofertas, empresas y entrevistas. Desarrollada en **Java 24** con **Maven**,
+con persistencia en **MySQL** mediante **JDBC**.
+
+Evoluciona la versión 1.0 (CLI con ficheros de texto), que se conserva en el historial
+del repositorio con la etiqueta `v1.0`.
+
+## Equipo
+
+| Integrante | Responsabilidades |
+|------------|-------------------|
+| Julián Navarro Moya | Modelo de datos, esquema SQL, DAO JDBC, capa de servicio y validaciones, importación CSV, transacciones, tests con H2, configuración Maven |
+| Chakir Hachmi | Interfaz JavaFX: pantallas FXML con Scene Builder, controladores, navegación, formularios, filtros visuales, hoja de estilos CSS |
+
+Diseño de la interfaz en Figma: _enlace pendiente_
 
 ## Arquitectura
 
+Estructura en capas. Cada capa solo depende de la inmediatamente inferior.
+
 ```text
 src/main/java/org/example/
-├── Main.java                                  # Punto de entrada
-├── exception/
-│   └── TrackerException.java                  # Error de dominio con mensaje amigable
-├── model/
-│   └── Candidatura.java                       # POJO + serialización CSV
-├── repository/
-│   ├── CandidaturaRepository.java             # Contrato de persistencia
-│   └── impl/
-│       └── CandidaturaFileRepository.java     # Implementación NIO sobre candidaturas.txt
-├── service/
-│   └── CandidaturaService.java                # Reglas de negocio y filtros con Streams
-└── cli/
-    └── CliRunner.java                         # Parseo de args, tablas y fichas
+├── config/          ConfiguracionBD        Lectura de config.properties y conexión JDBC
+├── model/           Empresa, Oferta,       Records y enums del dominio
+│                    Entrevista, FiltroOferta, EstadoOferta, TipoEntrevista,
+│                    ResultadoEntrevista
+├── repository/jdbc/ EmpresaJdbcDAO,        Acceso a MySQL con PreparedStatement
+│                    OfertaJdbcDAO,
+│                    EntrevistaJdbcDAO
+├── service/         EmpresaService,        Contratos de negocio (interfaces)
+│                    OfertaService,
+│                    EntrevistaService
+├── service/impl/    *ServiceImpl,          Validaciones y reglas de negocio
+│                    Validaciones
+├── exception/       TrackerException       Error de dominio con mensaje para el usuario
+└── ui/              Launcher, JobTrackrApp, Punto de entrada JavaFX
+                     Navegador, Servicios,  y pantallas
+                     controller/, fxml/
 ```
 
-La interfaz `CandidaturaRepository` desacopla la persistencia para poder migrar en la
-v2.0 a JDBC y en la v3.0 a Hibernate sin modificar el servicio.
+Flujo de una petición: **pantalla FXML → controlador → servicio → DAO → MySQL**.
+La interfaz solo conoce las interfaces de `service`, de modo que la implementación
+puede cambiarse sin tocar las pantallas.
 
 ## Requisitos
 
-- JDK 21 o superior.
+- JDK 24 o superior.
 - Maven 3.9 o superior.
+- Docker, con un contenedor MySQL 8 accesible en el puerto `3308`.
 
-## Compilar y empaquetar
+## Configuración
+
+1. Crea la base de datos y el usuario una sola vez, con `root`:
+
+   ```sql
+   CREATE DATABASE tracker CHARACTER SET utf8mb4;
+   CREATE USER 'user'@'%' IDENTIFIED BY 'TU_CONTRASEÑA';
+   GRANT ALL PRIVILEGES ON tracker.* TO 'user'@'%';
+   FLUSH PRIVILEGES;
+   ```
+
+2. Crea las tablas ejecutando `sql/schema.sql` contra la base `tracker`.
+
+3. Copia `config.example.properties` como `config.properties` en la raíz del proyecto
+   y rellena tus datos:
+
+   ```properties
+   db.url=jdbc:mysql://localhost:3308/tracker?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Madrid
+   db.user=user
+   db.password=TU_CONTRASEÑA
+   ```
+
+`config.properties` contiene credenciales y **no se sube al repositorio** (está en
+`.gitignore`).
+
+## Compilar y ejecutar
 
 Desde la raíz del proyecto:
 
@@ -39,124 +83,78 @@ Desde la raíz del proyecto:
 mvn clean package
 ```
 
-El JAR ejecutable se genera en `target/tracker.jar` y, además, se copia
-automáticamente a la raíz del proyecto como `tracker.jar`:
-
-```text
-target/tracker.jar
-tracker.jar
-```
-
-## Ejecutar
-
-Desde la raíz del proyecto puedes ejecutar el JAR de cualquiera de estas dos
-formas (ambas son válidas):
-
-```powershell
-# Windows
-java -jar tracker.jar listar
-java -jar target\tracker.jar listar
-```
+Ejecutar la interfaz gráfica:
 
 ```bash
-# Linux / macOS
-java -jar tracker.jar listar
-java -jar target/tracker.jar listar
+mvn javafx:run
 ```
 
-Al empaquetar con `mvn clean package`, Maven deja el JAR tanto en `target/`
-como en la raíz del proyecto, de modo que `java -jar tracker.jar ...` ya no
-falla con `Error: Unable to access jarfile tracker.jar`.
+En IntelliJ también puedes crear una configuración de tipo *Application* con
+**Main class** `org.example.ui.Launcher`.
 
-Si el JAR todavía no existe, los lanzadores lo generan automáticamente (con
-Maven si está instalado o, en su defecto, con `javac`) y ejecutan siempre desde
-la raíz del proyecto para que `candidaturas.txt` esté siempre en el mismo sitio:
+## Esquema de la base de datos
 
-```powershell
-# Windows
-.\tracker.cmd listar --estado pendiente --empresa Indra
+| Tabla | Descripción | Relación |
+|-------|-------------|----------|
+| `EMPRESA` | Empresas a las que se envían candidaturas. El nombre es único. | — |
+| `OFERTA` | Candidatura a un puesto concreto con su estado y salario. | N:1 con `EMPRESA`, `ON DELETE RESTRICT` |
+| `ENTREVISTA` | Entrevistas asociadas a una oferta. | N:1 con `OFERTA`, `ON DELETE CASCADE` |
+
+Estados de una oferta: `pendiente`, `entrevista`, `rechazado`, `aceptado`.
+
+Borrar una oferta borra sus entrevistas. Borrar una empresa que tiene ofertas está
+prohibido, y la aplicación lo indica con un mensaje.
+
+## Importación CSV
+
+Desde la pantalla principal se puede importar un fichero con este formato, con
+cabecera y separador `;`:
+
+```text
+empresa;titulo;estado;fechaPostulacion;salario;enlace;notas
+Indra;Desarrollador Junior Java;pendiente;2026-11-20;24000;https://indra.example/oferta1;primera prueba
+NTT Data;Backend Spring Boot;entrevista;2026-11-21;;https://nttdata.example/oferta2;
 ```
+
+- Las empresas que no existen se crean automáticamente. La búsqueda por nombre no
+  distingue mayúsculas.
+- Si una sola fila es incorrecta, **no se importa ninguna**, y se muestra el número de
+  línea y el motivo.
+
+## Pruebas
+
+Las pruebas usan JUnit 5 con una base de datos H2 en memoria, así que no necesitan
+MySQL:
 
 ```bash
-# Linux / macOS
-./tracker.sh listar --estado pendiente --empresa Indra
+mvn test
 ```
 
-## Formato de datos
+_Estado: pruebas de DAO, filtros y transacciones en desarrollo._
 
-Fichero principal: `candidaturas.txt` (se crea automáticamente si no existe).
+## Estado de la versión
 
-```text
-id;titulo;empresa;estado;dd/MM/yyyy
-13;Desarrollador Backend Java;Indra;PENDIENTE;26/10/2026
-```
+- [x] Modelo de dominio y esquema SQL
+- [x] DAO JDBC de empresas, ofertas y entrevistas
+- [x] Servicios con validaciones
+- [x] Importación CSV con validación previa
+- [x] Pantalla de listado de ofertas
+- [ ] Transacciones en operaciones de varias tablas
+- [ ] Pantalla de detalle con entrevistas
+- [ ] Formulario de alta y edición de ofertas
+- [ ] Gestión de empresas
+- [ ] Cambio de estado desde la tabla
+- [ ] Hoja de estilos CSS
+- [ ] Tests JUnit con H2
+- [ ] Retirada de la CLI de la versión 1.0
 
-Fichero semilla de prueba: `candidaturas.csv` (15 candidaturas, varias de Indra en
-estado `PENDIENTE`).
+## Uso de inteligencia artificial
 
-## Comandos
+Se ha utilizado un asistente de IA para explicar conceptos, revisar código y preparar
+ejemplos. Todo el código ha sido revisado, comprendido y probado por sus autores.
 
-```text
-listar [--estado ESTADO] [--empresa TEXTO]
-anadir --titulo "..." --empresa "..." --estado ESTADO [--fecha dd/MM/yyyy]
-ver <id>
-borrar <id>
-importar <archivo.csv>
-ayuda | --help
-```
+## Versiones
 
-Los comandos funcionan con o sin guion inicial (`listar` / `-listar`) y también se
-acepta `anadir` sin eñe para terminales con problemas de codificación.
-
-## Pruebas de las historias de usuario (Windows PowerShell)
-
-```powershell
-# 0. Estado limpio (opcional)
-Remove-Item candidaturas.txt -ErrorAction SilentlyContinue
-
-# HU-02: listar sin datos
-java -jar target\tracker.jar listar
-
-# HU-01: importar el CSV de ejemplo (asigna IDs 1..15)
-java -jar target\tracker.jar importar candidaturas.csv
-
-# HU-02: listar todas las candidaturas
-java -jar target\tracker.jar listar
-
-# HU-03: filtro combinado, case-insensitive
-java -jar target\tracker.jar listar --estado pendiente --empresa Indra
-
-# HU-04: añadir con fecha explícita y sin fecha (fecha actual)
-java -jar target\tracker.jar anadir --titulo "Desarrollador Backend Java" --empresa "Indra" --estado pendiente --fecha 26/10/2026
-java -jar target\tracker.jar anadir --titulo "AI Engineer" --empresa "OpenAI" --estado entrevista
-
-# HU-05: ver el detalle de la candidatura 13
-java -jar target\tracker.jar ver 13
-
-# HU-06: borrar la candidatura 13 y comprobar que ya no existe
-java -jar target\tracker.jar borrar 13
-java -jar target\tracker.jar ver 13
-
-# Ayuda y errores controlados
-java -jar target\tracker.jar ayuda
-java -jar target\tracker.jar listar -estado pendiente -empresa Indra
-java -jar target\tracker.jar ver abc
-java -jar target\tracker.jar importar noexiste.csv
-```
-
-En Linux/macOS, sustituye `target\tracker.jar` por `target/tracker.jar` y
-`Remove-Item candidaturas.txt -ErrorAction SilentlyContinue` por
-`rm -f candidaturas.txt`.
-
-> **Nota de codificación:** la aplicación escribe la consola en UTF-8. Si utilizas
-> una consola antigua de Windows y ves mal las tildes, ejecuta antes `chcp 65001`.
-
-## Características de la v1.0
-
-- CLI puro por argumentos: sin `Scanner` ni menús interactivos.
-- Persistencia NIO con `Files`, `Path` y `StandardCharsets.UTF_8`.
-- IDs autoincrementales (`max(id) + 1`).
-- Importación de CSV con o sin cabecera y con 4 o 5 columnas.
-- Filtros combinables y case-insensitive con Streams.
-- Validación estricta de fechas `dd/MM/yyyy`, incluidos días imposibles.
-- Errores controlados con `[ERROR]` y ejemplos de uso, sin stacktraces.
+- **v1.0**: CLI con persistencia en ficheros de texto. Etiqueta `v1.0`.
+- **v2.0**: interfaz JavaFX y MySQL con JDBC. Etiqueta `v2.0`.
+- **v3.0**: migración a Hibernate. Fuera del alcance de esta entrega.
