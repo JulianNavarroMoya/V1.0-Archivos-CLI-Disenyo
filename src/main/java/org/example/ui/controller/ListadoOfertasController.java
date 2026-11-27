@@ -66,6 +66,7 @@ public class ListadoOfertasController implements Initializable {
         SortedList<Oferta> ordenadas = new SortedList<>(filtradas);
         ordenadas.comparatorProperty().bind(tabla.comparatorProperty());
         tabla.setItems(ordenadas);
+        tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
         recargar();
     }
@@ -101,6 +102,8 @@ public class ListadoOfertasController implements Initializable {
         }
         Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION,
                 "¿Borrar la oferta '" + seleccionada.titulo() + "' y sus entrevistas?");
+        confirmacion.setResizable(true);
+        confirmacion.initOwner(ventana());
         confirmacion.showAndWait().filter(ButtonType.OK::equals).ifPresent(boton -> {
             try {
                 servicio.borrarOferta(seleccionada.id());
@@ -172,10 +175,17 @@ public class ListadoOfertasController implements Initializable {
     }
 
     private void mostrarAviso(String mensaje) {
-        new Alert(Alert.AlertType.INFORMATION, mensaje).showAndWait();
+        mostrarAlerta(Alert.AlertType.INFORMATION, mensaje);
     }
 
     private void mostrarError(String mensaje) {
-        new Alert(Alert.AlertType.ERROR, mensaje).showAndWait();
+        mostrarAlerta(Alert.AlertType.ERROR, mensaje);
+    }
+
+    private void mostrarAlerta(Alert.AlertType tipo, String mensaje) {
+        Alert alerta = new Alert(tipo, mensaje);
+        alerta.setResizable(true);
+        alerta.initOwner(ventana());
+        alerta.showAndWait();
     }
 }
